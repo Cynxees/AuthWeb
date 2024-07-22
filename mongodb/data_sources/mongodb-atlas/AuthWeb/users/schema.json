@@ -1,0 +1,15 @@
+{
+    "title": "users schema",
+    "properties": {
+        "username": {
+            "bsonType": "string"
+        },
+        "password": {
+            "bsonType": "string"
+        }
+    },
+    "required": [
+        "username",
+        "password"
+    ]
+}
