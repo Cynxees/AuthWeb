@@ -1,5 +1,5 @@
 import { createContext, Dispatch, SetStateAction } from 'react';
-import { User } from 'realm';
+import { User } from '../types/User';
 
 
 interface UserContextType {
