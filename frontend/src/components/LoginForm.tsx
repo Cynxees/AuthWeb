@@ -1,6 +1,7 @@
-import { useContext, useState } from "react";
-import UserContext from "../contexts/UserContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 interface LoginFormProps {
     setLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,73 +9,24 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ setLogin }) => {
 
-    const [formData, setFormData] = useState({
-    
-        username: "",
-        password: ""
-    
-    });
+    const [ name, setName ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ error, setError ] = useState('');
+    const [ isVisible, setVisible ] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
 
-    const userContext = useContext(UserContext);
+    const { loginUser } = useAuth();
     const navigate = useNavigate();
-
-    if (!userContext) return <div>Context not found</div>
-
-
-    const { setUser } = userContext;
-
-    const [error, setError] = useState('');
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        
-        const { name, value } = e.target;
-        
-        setFormData((prevData) => ({
-        
-            ...prevData,
-            [name]: value,
-        
-        }));
-    
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         
         console.log("login pressed");
         e.preventDefault();
-
-        if(formData.username == ""){
-
-            setError("Username is required");
-            return;
-
-        }
-
-        if(formData.password == ""){
-
-            setError("Password is required");
-            return;
-
-        }
-
+        
         try {
 
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Invalid login');
-            }
-
-            const data = await response.json();
-            console.log(data);
-            setUser(data);
-            navigate('/home');
+            await loginUser(name, password, rememberMe);
+            navigate('/home')
         
         } catch (error: any) {
         
@@ -84,45 +36,73 @@ const LoginForm: React.FC<LoginFormProps> = ({ setLogin }) => {
     
     };
 
-    return <div className="flex flex-col">
+    return <div className="flex flex-col mx-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 border-2 border-[#8697C4] bg-neutral-100 lg:p-[5vw] p-10 rounded-xl ">
         
-        <div className="text-3xl mb-5">
+        <div className="text-4xl mb-10 mx-auto">
             
-            Login Form
+            Welcome!
+
         </div>
-        <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-            <div>
-                <label htmlFor="username">Username:</label>
+        <form className="flex flex-col gap-4 text-xl lg:w-[20vw] w-[60vw]" onSubmit={handleSubmit}>
+
+            <div className="flex flex-col">
+
+                <span className="font-medium ms-2">Username</span>
                 <input
                     type="text"
-                    id="username"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleInputChange}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John1234"
+                    className="p-2 rounded-md border border-[#8697C4] hover:border-sky-700"
                 />
 
             </div>
-            
-            <div>
-                <label htmlFor="password">Password:</label>
+
+            <div className="flex flex-col">
+
+                <span className="font-medium ms-2">Password</span>
+
+                <div className="relative">
+
+                    {!isVisible ? <FaRegEyeSlash className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer" onClick={() => setVisible(true)}/>
+                        : <FaRegEye className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer" onClick={() => setVisible(false)} />
+                    }
+                    <input
+                        type={isVisible ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="********"
+                        className="w-full p-2 rounded-md border border-[#8697C4] hover:border-sky-700"
+
+                    />
+
+
+                </div>
+
+            </div>
+            <div className="flex items-center">
                 <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="mr-2"
                 />
+                <span>Remember Me</span>
             </div>
             <div className="text-red-400">
-                
                 {error}
                 
             </div>
-            <button type="submit">Login</button>
+            <button type="submit" className="p-5 rounded-md border-2 bg-slate-600 text-white hover:bg-slate-800 hover:border-blue-400 hover:text-blue-300">Sign In</button>
         </form>
 
 
-        <button className="bg-transparent text-cyan-400" onClick={() => {setLogin(false)}}>Register</button>
+        <div className="mt-5">
+
+            <span>Don't Have an Account? </span>
+            <button className="bg-transparent text-cyan-500 hover:text-cyan-700" onClick={() => {setLogin(false)}}>Register</button>
+
+        </div>
 
     </div>
 

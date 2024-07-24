@@ -16,6 +16,4 @@ const defaultValue : UserContextType = {
 
 };
 
-const UserContext = createContext<UserContextType>(defaultValue);
-
-export default UserContext;
+export const UserContext = createContext<UserContextType>(defaultValue);

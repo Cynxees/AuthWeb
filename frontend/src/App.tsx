@@ -1,11 +1,10 @@
 import { createContext, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
-import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
-import UserContext from './contexts/UserContext'
-import { User } from 'realm'
+import { UserContext } from './contexts/UserContext'
+import { User } from './types/User'
 import HomePage from './pages/HomePage'
 
 

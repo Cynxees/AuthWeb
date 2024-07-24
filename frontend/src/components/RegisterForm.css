@@ -1,0 +1,11 @@
+.password-strength-red {
+    @apply from-red-500 to-red-400;
+}
+  
+.password-strength-orange {
+    @apply from-orange-500 to-orange-400;
+}
+  
+.password-strength-green {
+    @apply from-green-500 to-green-400;
+}
